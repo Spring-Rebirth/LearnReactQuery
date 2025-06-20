@@ -1,0 +1,22 @@
+读取（Read）
+
+- 获取全部帖子
+GET https://jsonplaceholder.typicode.com/posts
+
+- 获取单个帖子
+GET https://jsonplaceholder.typicode.com/posts/{id}
+
+新增（Create）
+POST https://jsonplaceholder.typicode.com/posts
+在请求体（JSON）里传入 title、body、userId 等字段。
+
+全量更新（Update - PUT）
+PUT https://jsonplaceholder.typicode.com/posts/{id}
+请求体需包含要保留的全部字段。
+
+局部更新（Update - PATCH）
+PATCH https://jsonplaceholder.typicode.com/posts/{id}
+只提交需要修改的字段即可。
+
+删除（Delete）
+DELETE https://jsonplaceholder.typicode.com/posts/{id}
