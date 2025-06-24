@@ -14,44 +14,58 @@ import { DevToolsBubble } from 'react-native-react-query-devtools';
 import SettingScreen from './src/screens/SettingScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import DetailScreen from './src/screens/DetailScreen';
+import { persistQueryClient } from '@tanstack/react-query-persist-client'
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 function App(): React.JSX.Element {
-  const queryClient = new QueryClient();
-  const bottomTabNav = createBottomTabNavigator({
-    screens: {
-      Home: HomeScreen,
-      Setting: SettingScreen,
-    },
-  })
-
-  const rootStack = createNativeStackNavigator({
-    screens: {
-      RootBottom: {
-        screen: bottomTabNav,
-        options: { headerShown: false }
-      },
-      Detail: {
-        screen: DetailScreen,
-        options: {
-          headerBackVisible: true,
+    const queryClient = new QueryClient();
+    const bottomTabNav = createBottomTabNavigator({
+        screens: {
+            Home: HomeScreen,
+            Setting: SettingScreen,
         },
-      },
-    },
-  })
+    })
 
-  const Navigation = createStaticNavigation(rootStack);
+    const asyncStoragePersister = createAsyncStoragePersister({
+        storage: AsyncStorage
+    })
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Navigation />
-      {__DEV__ && (
-        <DevToolsBubble
-          queryClient={queryClient}
-          onCopy={async () => false}
-        />
-      )}
-    </QueryClientProvider>
-  );
+    React.useEffect(() => {
+        persistQueryClient({
+            queryClient,
+            persister: asyncStoragePersister,
+        })
+    }, [])
+
+    const rootStack = createNativeStackNavigator({
+        screens: {
+            RootBottom: {
+                screen: bottomTabNav,
+                options: { headerShown: false }
+            },
+            Detail: {
+                screen: DetailScreen,
+                options: {
+                    headerBackVisible: true,
+                },
+            },
+        },
+    })
+
+    const Navigation = createStaticNavigation(rootStack);
+
+    return (
+        <QueryClientProvider client={queryClient}>
+            <Navigation />
+            {__DEV__ && (
+                <DevToolsBubble
+                    queryClient={queryClient}
+                    onCopy={async () => false}
+                />
+            )}
+        </QueryClientProvider>
+    );
 }
 
 export default App;

@@ -35,6 +35,8 @@ export default function HomeScreen() {
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.length > 0 ? allPages.length + 1 : undefined;
     },
+    staleTime: 1000 * 10,
+    gcTime: 1000 * 60,
   })
 
   // 非乐观更新
@@ -106,11 +108,11 @@ export default function HomeScreen() {
     },
   });
 
-  useFocusEffect(
-    useCallback(() => {
-      queryClient.invalidateQueries({ queryKey: ['posts'] })
-    }, [queryClient])
-  )
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     queryClient.invalidateQueries({ queryKey: ['posts'] })
+  //   }, [queryClient])
+  // )
 
   if (isLoading) {
     return (
