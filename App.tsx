@@ -17,13 +17,28 @@ import DetailScreen from './src/screens/DetailScreen';
 import { persistQueryClient } from '@tanstack/react-query-persist-client'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 function App(): React.JSX.Element {
     const queryClient = new QueryClient();
     const bottomTabNav = createBottomTabNavigator({
         screens: {
-            Home: HomeScreen,
-            Setting: SettingScreen,
+            Home: {
+                screen: HomeScreen,
+                options: {
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="home-outline" color={color} size={size} />
+                    ),
+                }
+            },
+            Setting: {
+                screen: SettingScreen,
+                options: {
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="settings-outline" color={color} size={size} />
+                    ),
+                }
+            },
         },
     })
 
