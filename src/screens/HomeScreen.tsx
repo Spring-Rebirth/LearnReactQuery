@@ -1,6 +1,6 @@
 import { Text, View, ActivityIndicator, TouchableOpacity, FlatList, TextInput, Button, Alert } from 'react-native'
 import { postsApi } from '../constants/api'
-import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient, InfiniteData } from '@tanstack/react-query';
 import { useNavigation, NavigationProp, useFocusEffect } from '@react-navigation/native'
 import React, { useCallback } from 'react';
 import type { PostPayload, Post } from '../constants/api'
@@ -72,6 +72,39 @@ export default function HomeScreen() {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
     }
   })
+
+  // 删除 乐观更新
+  const deletePostOptimistic = useMutation({
+    mutationFn: (id: number) => postsApi.remove(id),
+    onMutate: async (deletedId) => {
+      await queryClient.cancelQueries({ queryKey: ['posts'] });
+      // 获取旧数据快照
+      const previousPostsData = queryClient.getQueryData(['posts']);
+
+      // 乐观地更新数据
+      queryClient.setQueryData<InfiniteData<Post[]> | undefined>(
+        ['posts'],
+        (oldData) => {
+          if (!oldData) {
+            return { pages: [], pageParams: [] };
+          }
+
+          // 遍历所有页面，过滤掉要删除的帖子
+          const newPages = oldData.pages.map(page =>
+            page.filter(post => post.id !== deletedId)
+          );
+
+          return {
+            ...oldData,
+            pages: newPages,
+          };
+        }
+      );
+
+      // 返回旧数据快照，用于出错时回滚
+      return { previousPostsData };
+    },
+  });
 
   useFocusEffect(
     useCallback(() => {
