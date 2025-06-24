@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, ActivityIndicator } from 'react-native'
 import { useRoute } from '@react-navigation/native'
 import { useQuery } from '@tanstack/react-query'
 import { postsApi } from '../constants/api'
@@ -15,6 +15,14 @@ export default function DetailScreen() {
   })
 
   console.log('DetailScreen - query.data:', query.data)
+
+  if (query.isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size={'small'} />
+      </View>
+    )
+  }
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

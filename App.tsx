@@ -30,7 +30,12 @@ function App(): React.JSX.Element {
         screen: bottomTabNav,
         options: { headerShown: false }
       },
-      Detail: DetailScreen,
+      Detail: {
+        screen: DetailScreen,
+        options: {
+          headerBackVisible: true,
+        },
+      },
     },
   })
 
