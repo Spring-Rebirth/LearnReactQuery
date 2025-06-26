@@ -184,7 +184,7 @@ export default function HomeScreen() {
           />
         </View>
         <Button title='submit post' onPress={() => addPost.mutate(form)} />
-        <Button title='submit post' onPress={() => addPostOptimistic.mutate(form)} />
+        <Button title='submit post optimistic' onPress={() => addPostOptimistic.mutate(form)} />
       </View>
     </View>
   );
