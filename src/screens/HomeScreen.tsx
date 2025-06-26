@@ -130,22 +130,32 @@ export default function HomeScreen() {
         data={allPosts}
         keyExtractor={item => item.id.toString()}
         renderItem={({ item, index }) => (
-          <View style={{ height: 50, width: '100%', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 16 }}>
-            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+          <View style={{ height: 68, width: '100%', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 16, borderWidth: 1, borderColor: 'orange' }}>
+            <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 6 }}>
               {item.title}
             </Text>
-            <TouchableOpacity
-              onPress={() => {
-                queryClient.prefetchQuery({
-                  queryKey: ['post', item.id],
-                  queryFn: () => postsApi.get(item.id)
-                })
-                navigation.navigate('Detail', { id: item.id.toString() })
-              }}
-              style={{ width: 160, height: 26, backgroundColor: 'skyblue', justifyContent: 'center', alignItems: 'center' }}
-            >
-              <Text style={{ color: 'black' }}>Go to Detail</Text>
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  queryClient.prefetchQuery({
+                    queryKey: ['post', item.id],
+                    queryFn: () => postsApi.get(item.id)
+                  })
+                  navigation.navigate('Detail', { id: item.id.toString() })
+                }}
+                style={{ width: 160, height: 26, backgroundColor: 'skyblue', justifyContent: 'center', alignItems: 'center' }}
+              >
+                <Text style={{ color: 'black' }}>Go to Detail</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  deletePostOptimistic.mutate(item.id)
+                }}
+                style={{ width: 160, height: 26, backgroundColor: 'skyblue', alignSelf: 'flex-end', justifyContent: 'center', alignItems: 'center' }}
+              >
+                <Text style={{ color: 'black' }}>Delete</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
         onEndReached={() => {
